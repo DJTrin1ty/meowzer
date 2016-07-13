@@ -19,19 +19,69 @@
       // call and hold our canvas tool render-er
 
       //sets starting location for ball
+      let scrollImg = new Image();
+      let imgWidth = 0;
+      let imgHeight = 0;
+      let imageData = {};
+      let canvasWidth = 480;
+      let canvasHeight = 240;
+      let scrollVal = 0;
+      let speed = 2;
+      scrollImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468450625/146845109340105_ozlmvx.png";
+      scrollImg.onload = loadImage;
 
-      let birdRadius = 10
+      function loadImage(){
+        imgWidth = scrollImg.width,
+        imgHeight = scrollImg.height;
+        canvas.width = 1000;
+        canvas.height = 600;
+        render();
+      }
 
-      let birdStartX = canvas.width - 90;
-      let birdStartY = 200;
+      function render(){
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-      let birdGoingX = -2;
-      let birdGoingY = 0;
+        if (scrollVal >= canvasWidth){
+          scrollVal = 0;
+        }
 
-      function drawBird(){
+        scrollVal += speed;
+        ctx.drawImage(scrollImg,-scrollVal,0,imgWidth, imgHeight);
+        ctx.drawImage(scrollImg,canvasWidth-scrollVal,0,imgWidth, imgHeight);
+
+        // setTimeout(function(){render();},10);
+      }
+
+      let birdsCaught = 0;
+
+      // let birdRadius = 10
+      // let birdStartX = canvas.width - 90;
+      // let birdStartY = 200;
+      // let birdGoingX = -2;
+      // let birdGoingY = 0;
+
+      const fastBird = {
+        fbr: 15,
+        fbsx: canvas.width - 90,
+        fbsy: 200,
+        fbvx: -4,
+        fbvy: 0,
+        color: "blue"
+      }
+
+      const slowBird = {
+        fbr: 30,
+        fbsx: canvas.width - 90,
+        fbsy: 100,
+        fbvx: -3,
+        fbvy: 0,
+        color: "green"
+      }
+
+      function drawBird(bird){
         ctx.beginPath();
-        ctx.arc(birdStartX, birdStartY, birdRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = "lightblue";
+        ctx.arc(bird.fbsx, bird.fbsy, bird.fbr, 0, Math.PI * 2, false);
+        ctx.fillStyle = bird.color;
         ctx.fill();
         ctx.closePath();
       }
@@ -40,14 +90,12 @@
       //BOOOOOOOOOOOOOOOOOOOOOOOOWETIHOWEIHTOIWHETPOWHETPOHJWET
 
       let kittyRadius = 25
-
       let kittyStartX = 100;
       let kittyStartY = canvas.height - kittyRadius;
-
       function drawKitty(){
         ctx.beginPath();
         ctx.arc(kittyStartX, kittyStartY, kittyRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = "pink";
+        ctx.fillStyle = 'red';
         ctx.fill();
         ctx.closePath();
       }
@@ -59,35 +107,82 @@
       let downPressed = false;
 
       function randomStarter(){
-        return (Math.random() * (canvas.height - 60));
+        return (Math.random() * (canvas.height - 30));
+      }
+
+      function reDraw(){
+        drawBird(fastBird);
+        drawBird(slowBird);
+        drawKitty();
+      }
+
+      function checkBounds(bird){
+        if (bird.fbsx + bird.fbr < 0){
+          bird.fbsx = canvas.width - 30;
+          birdsCaught += 1;
+          levelUp();
+          bird.fbsy = randomStarter();
+        }
+        if (upPressed && kittyStartY - kittyRadius > 0){
+          kittyStartY *= .99;
+          kittyStartY -= 1;
+        } else if (kittyStartY < (canvas.height - kittyRadius)){
+          kittyStartY += 3;
+        }
+      }
+
+      function turnUp(x, y){
+        fastBird.fbvx -= x;
+        slowBird.fbvx -= y;
+      }
+
+      function levelUp(){
+        if (birdsCaught === 10){
+          turnUp(3, 1);
+        } else if (birdsCaught === 20){
+          turnUp(3.5, 3.5);
+        } else if (birdsCaught === 40){
+          turnUp(4, 4);
+        } else if (birdsCaught === 70){
+          turnUp(5, 7);
+        }
+      }
+
+      function collisionOccured(bird){
+        let dist = Math.sqrt(Math.pow(bird.fbsx - kittyStartX, 2) + Math.pow(bird.fbsy - kittyStartY, 2))
+        return dist < (bird.fbr + kittyRadius);
       }
 
 
-      function draw(){
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawBird();
-        drawKitty();
-        if (birdStartX - birdRadius < 0){
-          birdGoingX = -birdGoingX;
-        } else if ((birdStartX + birdRadius) > canvas.width){
-          birdGoingX = -birdGoingX;
-        }
+      function moveImage(bird){
+        bird.fbsx += bird.fbvx;
+        bird.fbsy += bird.fbvy;
+      }
 
-        birdStartX += birdGoingX;
-        birdStartY += birdGoingY;
-
-        if (upPressed && kittyStartY - kittyRadius > 0){
-          kittyStartY -= 2;
-        } else if (kittyStartY < (canvas.height - kittyRadius)){
-          kittyStartY += 1.5;
+      function gameOver(bird1, bird2){
+        if (collisionOccured(bird1)){
+          console.log(`GG fastBird ${birdsCaught} birds caught!`);
+        } else if (collisionOccured(bird2)){
+          console.log(`GG slowBird ${birdsCaught} birds caught!`);
         }
+      }
+
+      function mechanic(){
+        render();
+        reDraw();
+        moveImage(fastBird);
+        moveImage(slowBird);
+        gameOver(fastBird, slowBird);
+
+        checkBounds(fastBird);
+        checkBounds(slowBird);
+        console.log(birdsCaught);
       }
 
       //listen for key "downs/ups" and use functions "keyDownHandler",
       //keyUpHandler.
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
-
 //Util
       //if "up" arrow key is pressed set var to "true"
       function keyDownHandler(e){
@@ -95,7 +190,6 @@
           upPressed = true;
         }
       }
-
       //if "up" arrow key is released set var to "false"
       function keyUpHandler(e){
         if (e.keyCode === 38){
@@ -105,7 +199,7 @@
 
 
       //draw
-      setInterval(draw, 5);
+      setInterval(mechanic, 10);
 
 
     </script>
