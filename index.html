@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Meow Single</title>
+    <style>
+      { padding: 0; margin: 0 }
+      canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+  </head>
+  <body>
+
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      let canvas = document.getElementById("myCanvas");
+      // grab our canvas to save
+      let ctx = canvas.getContext("2d");
+      // call and hold our canvas tool render-er
+
+      //sets starting location for ball
+
+      let birdRadius = 10
+
+      let birdStartX = canvas.width - 90;
+      let birdStartY = 200;
+
+      let birdGoingX = -2;
+      let birdGoingY = 0;
+
+      function drawBird(){
+        ctx.beginPath();
+        ctx.arc(birdStartX, birdStartY, birdRadius, 0, Math.PI * 2, false);
+        ctx.fillStyle = "lightblue";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+
+      //BOOOOOOOOOOOOOOOOOOOOOOOOWETIHOWEIHTOIWHETPOWHETPOHJWET
+
+      let kittyRadius = 25
+
+      let kittyStartX = 100;
+      let kittyStartY = canvas.height - kittyRadius;
+
+      function drawKitty(){
+        ctx.beginPath();
+        ctx.arc(kittyStartX, kittyStartY, kittyRadius, 0, Math.PI * 2, false);
+        ctx.fillStyle = "pink";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      let tempY = randomStarter();
+
+
+      let upPressed = false;
+      let downPressed = false;
+
+      function randomStarter(){
+        return (Math.random() * (canvas.height - 60));
+      }
+
+
+      function draw(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBird();
+        drawKitty();
+        if (birdStartX - birdRadius < 0){
+          birdGoingX = -birdGoingX;
+        } else if ((birdStartX + birdRadius) > canvas.width){
+          birdGoingX = -birdGoingX;
+        }
+
+        birdStartX += birdGoingX;
+        birdStartY += birdGoingY;
+
+        if (upPressed && kittyStartY - kittyRadius > 0){
+          kittyStartY -= 2;
+        } else if (kittyStartY < (canvas.height - kittyRadius)){
+          kittyStartY += 1.5;
+        }
+      }
+
+      //listen for key "downs/ups" and use functions "keyDownHandler",
+      //keyUpHandler.
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+
+//Util
+      //if "up" arrow key is pressed set var to "true"
+      function keyDownHandler(e){
+        if (e.keyCode === 38){
+          upPressed = true;
+        }
+      }
+
+      //if "up" arrow key is released set var to "false"
+      function keyUpHandler(e){
+        if (e.keyCode === 38){
+          upPressed = false;
+        }
+      }
+
+
+      //draw
+      setInterval(draw, 5);
+
+
+    </script>
+
+
+  </body>
+</html>
