@@ -65,7 +65,7 @@
 
       let kittyRadius = 25
       let kittyStartX = 100;
-      let kittyStartY = canvas.height - kittyRadius;
+      let kittyStartY = canvas.height - (kittyRadius * 3);
 
       let frameNum = 0;
       let b2Num = 0;
@@ -164,6 +164,7 @@
       }
 
       let upPressed = false;
+      let starting = true;
 
       function reDraw(){
         drawBird(fastBird);
@@ -185,10 +186,18 @@
         if (upPressed && kittyStartY - kittyRadius > 0){
           kittyStartY *= .99;
           kittyStartY -= 1;
-        } else if (kittyStartY < (canvas.height - kittyRadius)){
-          kittyStartY += 3;
+        } else if (kittyStartY - kittyRadius - 30 > canvas.height){
+          gameOver();
+        } else {
+          if (starting){
+            kittyStartY += 0;
+          } else {
+            kittyStartY += 3;
+          }
         }
       }
+
+
 
       function turnUp(x, y){
         fastBird.fbvx = -x;
@@ -235,14 +244,17 @@
         speed = 0;
       }
 
-      function gameOver(bird1, bird2){
+      function checkIfGameOver(bird1, bird2){
         if (collisionOccured(bird1)){
-          alert(`GG fastBird ${highscoreCounter} birds caught!`);
-          birdReset();
+          gameOver();
         } else if (collisionOccured(bird2)){
-          alert(`GG slowBird ${highscoreCounter} birds caught!`);
-          birdReset();
+          gameOver();
         }
+      }
+
+      function gameOver(){
+        alert(`Game Over! Your score was ${highscoreCounter}!`);
+        birdReset();
       }
 
       function mechanic(){
@@ -253,7 +265,7 @@
 
         birdyRender(slowBird, fastBird);
 
-        gameOver(fastBird, slowBird);
+        checkIfGameOver(fastBird, slowBird);
         levelUp();
         checkBounds(fastBird);
         checkBounds(slowBird);
@@ -266,6 +278,7 @@
       function keyDownHandler(e){
         if (e.keyCode === 32){
           upPressed = true;
+          starting = false;
         }
       }
 
