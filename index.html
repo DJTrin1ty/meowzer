@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <canvas id="myCanvas" width="1000" height="500"></canvas>
 
     <script>
       let canvas = document.getElementById("myCanvas");
@@ -23,42 +23,38 @@
       let imgWidth = 0;
       let imgHeight = 0;
       let imageData = {};
-      let canvasWidth = 480;
-      let canvasHeight = 240;
+      let canvasWidth = 1000;
+      let canvasHeight = 500;
       let scrollVal = 0;
       let speed = 2;
-      scrollImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468450625/146845109340105_ozlmvx.png";
+      scrollImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/c_scale,w_1000/v1468458751/6-vector-game-backgrounds-8003_imgs_8003_2_r5sezh.png";
       scrollImg.onload = loadImage;
 
       function loadImage(){
         imgWidth = scrollImg.width,
         imgHeight = scrollImg.height;
         canvas.width = 1000;
-        canvas.height = 600;
-        render();
+        canvas.height = 500;
+        renderMain();
       }
 
-      function render(){
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      let birdyImg = new Image();
+      birdyImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468459980/birdyfinal_qa3jol.png"
 
-        if (scrollVal >= canvasWidth){
-          scrollVal = 0;
-        }
+      let kittyImg = new Image();
+      kittyImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468473589/fatcatfinal_ri9nay.png";
 
-        scrollVal += speed;
-        ctx.drawImage(scrollImg,-scrollVal,0,imgWidth, imgHeight);
-        ctx.drawImage(scrollImg,canvasWidth-scrollVal,0,imgWidth, imgHeight);
+      let birdy2Img = new Image();
+      birdy2Img.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468474814/143902_flappy-flying-bird-sprite-shee_fukbcl.png";
 
-        // setTimeout(function(){render();},10);
-      }
 
-      let birdsCaught = 0;
+      let kittyRadius = 25
+      let kittyStartX = 100;
+      let kittyStartY = canvas.height - kittyRadius;
 
-      // let birdRadius = 10
-      // let birdStartX = canvas.width - 90;
-      // let birdStartY = 200;
-      // let birdGoingX = -2;
-      // let birdGoingY = 0;
+      let frameNum = 0;
+      let fNum = 0;
+      let b2Num = 0;
 
       const fastBird = {
         fbr: 15,
@@ -78,10 +74,71 @@
         color: "green"
       }
 
+      function renderMain(bird1, bird2){
+
+        if (frameNum < 3){
+          frameNum += 1;
+        } else {
+          frameNum = 0;
+        }
+        if (fNum < 4){
+          fNum += 1;
+        } else {
+          fNum = 0;
+        }
+        if (b2Num < 8){
+          b2Num += 1;
+        } else {
+          b2Num = 0;
+        }
+        if (scrollVal >= canvasWidth){
+          scrollVal = 0;
+        }
+
+        scrollVal += speed;
+        ctx.drawImage(scrollImg,-scrollVal,0,imgWidth, imgHeight);
+        ctx.drawImage(scrollImg,canvasWidth-scrollVal,0,imgWidth, imgHeight);
+
+        ctx.drawImage(birdyImg,
+          0 + (frameNum * 92),
+          0,
+          92,
+          64,
+          (bird1.fbsx - bird1.fbr),
+          (bird1.fbsy - bird1.fbr),
+          bird1.fbr * 2,
+          bird1.fbr * 2
+        )
+
+        ctx.drawImage(birdy2Img,
+          0 + (b2Num * 65),
+          0,
+          60,
+          46,
+          (bird2.fbsx - bird2.fbr),
+          (bird2.fbsy - bird2.fbr),
+          5 + (bird2.fbr * 2),
+          5 + (bird2.fbr * 2)
+        )
+
+        ctx.drawImage(kittyImg,
+          0 + (fNum * 50),
+          0,
+          50,
+          50,
+          (kittyStartX - kittyRadius),
+          (kittyStartY - kittyRadius),
+          kittyRadius * 2,
+          kittyRadius * 2
+        )
+      }
+
+      let birdsCaught = 0;
+
       function drawBird(bird){
         ctx.beginPath();
         ctx.arc(bird.fbsx, bird.fbsy, bird.fbr, 0, Math.PI * 2, false);
-        ctx.fillStyle = bird.color;
+        ctx.fillStyle = "blue";
         ctx.fill();
         ctx.closePath();
       }
@@ -89,9 +146,7 @@
 
       //BOOOOOOOOOOOOOOOOOOOOOOOOWETIHOWEIHTOIWHETPOWHETPOHJWET
 
-      let kittyRadius = 25
-      let kittyStartX = 100;
-      let kittyStartY = canvas.height - kittyRadius;
+
       function drawKitty(){
         ctx.beginPath();
         ctx.arc(kittyStartX, kittyStartY, kittyRadius, 0, Math.PI * 2, false);
@@ -120,7 +175,6 @@
         if (bird.fbsx + bird.fbr < 0){
           bird.fbsx = canvas.width - 30;
           birdsCaught += 1;
-          levelUp();
           bird.fbsy = randomStarter();
         }
         if (upPressed && kittyStartY - kittyRadius > 0){
@@ -132,19 +186,22 @@
       }
 
       function turnUp(x, y){
-        fastBird.fbvx -= x;
-        slowBird.fbvx -= y;
+        fastBird.fbvx = -x;
+        slowBird.fbvx = -y;
       }
 
+      //-4, -3
       function levelUp(){
         if (birdsCaught === 10){
-          turnUp(3, 1);
+          turnUp(6, 4);
         } else if (birdsCaught === 20){
-          turnUp(3.5, 3.5);
+          turnUp(9, 7);
         } else if (birdsCaught === 40){
-          turnUp(4, 4);
-        } else if (birdsCaught === 70){
-          turnUp(5, 7);
+          turnUp(11, 9);
+        } else if (birdsCaught === 60){
+          turnUp(13, 13);
+        } else if (birdsCaught === 80){
+          turnUp(1, 1);
         }
       }
 
@@ -168,12 +225,13 @@
       }
 
       function mechanic(){
-        render();
-        reDraw();
         moveImage(fastBird);
         moveImage(slowBird);
+        reDraw();
+        renderMain(slowBird, fastBird);
+        // birdyRender(slowBird, fastBird);
         gameOver(fastBird, slowBird);
-
+        // levelUp();
         checkBounds(fastBird);
         checkBounds(slowBird);
         console.log(birdsCaught);
@@ -186,13 +244,13 @@
 //Util
       //if "up" arrow key is pressed set var to "true"
       function keyDownHandler(e){
-        if (e.keyCode === 38){
+        if (e.keyCode === 32){
           upPressed = true;
         }
       }
       //if "up" arrow key is released set var to "false"
       function keyUpHandler(e){
-        if (e.keyCode === 38){
+        if (e.keyCode === 32){
           upPressed = false;
         }
       }
