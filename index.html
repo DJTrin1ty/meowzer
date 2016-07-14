@@ -36,7 +36,7 @@
         imgHeight = scrollImg.height;
         canvas.width = 1000;
         canvas.height = 500;
-        render();
+        // render();
       }
 
       function render(){
@@ -67,14 +67,21 @@
       let kittyStartX = 100;
       let kittyStartY = canvas.height - kittyRadius;
 
-      let fNum = 0;
       let frameNum = 0;
       let b2Num = 0;
+      let fNum = 0;
       function birdyRender(bird, bird2){
+
         if (frameNum < 3){
           frameNum += 1;
         } else {
           frameNum = 0;
+        }
+
+        if (b2Num < 8){
+          b2Num += 1;
+        } else {
+          b2Num = 0;
         }
 
         if (fNum < 4){
@@ -83,11 +90,6 @@
           fNum = 0;
         }
 
-        if (b2Num < 8){
-          b2Num += 1;
-        } else {
-          b2Num = 0;
-        }
 
         ctx.drawImage(birdyImg,
           0 + (frameNum * 92),
@@ -124,7 +126,7 @@
       }
 
 
-      let birdsCaught = 0;
+      let highscoreCounter = 0;
 
 
       const fastBird = {
@@ -153,10 +155,6 @@
         ctx.closePath();
       }
 
-
-      //BOOOOOOOOOOOOOOOOOOOOOOOOWETIHOWEIHTOIWHETPOWHETPOHJWET
-
-
       function drawKitty(){
         ctx.beginPath();
         ctx.arc(kittyStartX, kittyStartY, kittyRadius, 0, Math.PI * 2, false);
@@ -167,20 +165,21 @@
 
       let upPressed = false;
 
-      function randomStarter(){
-        return (Math.random() * (canvas.height - 50));
-      }
-
       function reDraw(){
         drawBird(fastBird);
         drawBird(slowBird);
         drawKitty();
       }
 
+
+      function randomStarter(){
+        return (Math.random() * (canvas.height - 50));
+      }
+
       function checkBounds(bird){
         if (bird.fbsx + bird.fbr < 0){
           bird.fbsx = canvas.width - 30;
-          birdsCaught += 1;
+          highscoreCounter += 1;
           bird.fbsy = randomStarter();
         }
         if (upPressed && kittyStartY - kittyRadius > 0){
@@ -198,16 +197,21 @@
 
       //-4, -3
       function levelUp(){
-        if (birdsCaught === 10){
-          turnUp(6, 4);
-        } else if (birdsCaught === 20){
-          turnUp(9, 7);
-        } else if (birdsCaught === 40){
-          turnUp(11, 9);
-        } else if (birdsCaught === 60){
-          turnUp(13, 13);
-        } else if (birdsCaught === 80){
-          turnUp(1, 1);
+        if (highscoreCounter === 10){
+          fastBird.fbvx = -6;
+          slowBird.fbvx = -4;
+        } else if (highscoreCounter === 20){
+          fastBird.fbvx = -9;
+          slowBird.fbvx = -7;
+        } else if (highscoreCounter === 40){
+          fastBird.fbvx = -11;
+          slowBird.fbvx = -9;
+        } else if (highscoreCounter === 60){
+          fastBird.fbvx = -13;
+          slowBird.fbvx = -13;
+        } else if (highscoreCounter === 80){
+          fastBird.fbvx = -15;
+          slowBird.fbvx = -15;
         }
       }
 
@@ -216,17 +220,28 @@
         return dist < (bird.fbr + kittyRadius);
       }
 
-
       function moveImage(bird){
         bird.fbsx += bird.fbvx;
         bird.fbsy += bird.fbvy;
       }
 
+      function birdReset(){
+        fastBird.fbsx = canvasWidth - 90;
+        fastBird.fbsy = 200;
+        fastBird.fbvx = 0;
+        slowBird.fbsx = canvasWidth - 90;
+        slowBird.fbsy = 100;
+        slowBird.fbvx = 0;
+        speed = 0;
+      }
+
       function gameOver(bird1, bird2){
         if (collisionOccured(bird1)){
-          console.log(`GG fastBird ${birdsCaught} birds caught!`);
+          alert(`GG fastBird ${highscoreCounter} birds caught!`);
+          birdReset();
         } else if (collisionOccured(bird2)){
-          console.log(`GG slowBird ${birdsCaught} birds caught!`);
+          alert(`GG slowBird ${highscoreCounter} birds caught!`);
+          birdReset();
         }
       }
 
@@ -239,37 +254,36 @@
         birdyRender(slowBird, fastBird);
 
         gameOver(fastBird, slowBird);
-        // levelUp();
+        levelUp();
         checkBounds(fastBird);
         checkBounds(slowBird);
-        console.log(birdsCaught);
       }
 
-      //listen for key "downs/ups" and use functions "keyDownHandler",
-      //keyUpHandler.
+
       document.addEventListener("keydown", keyDownHandler, false);
       document.addEventListener("keyup", keyUpHandler, false);
-//Util
-      //if "up" arrow key is pressed set var to "true"
+
       function keyDownHandler(e){
         if (e.keyCode === 32){
           upPressed = true;
         }
       }
-      //if "up" arrow key is released set var to "false"
+
       function keyUpHandler(e){
         if (e.keyCode === 32){
           upPressed = false;
         }
       }
 
-
-      //draw
-      setInterval(mechanic, 10);
-
+      // setInterval(mechanic, 10);
+      setTimeout(function(){ setInterval(mechanic, 10)}, 3000);
 
     </script>
 
-
+    <h3>Meowzer</h3>
+    <p> Press and hold down the "space bar" to make Meowzer fly upwards.
+      Releasing the "space bar" will bring him back down towards the ground.
+      Dodge the mean birds and attempt to gain the highest score. But
+      be warned, it gets harder over time!</p>
   </body>
 </html>
