@@ -26,7 +26,7 @@
       let canvasWidth = 1000;
       let canvasHeight = 500;
       let scrollVal = 0;
-      let speed = 2;
+      let speed = 0;
       scrollImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/c_scale,w_1000/v1468458751/6-vector-game-backgrounds-8003_imgs_8003_2_r5sezh.png";
       scrollImg.onload = loadImage;
 
@@ -51,70 +51,89 @@
         ctx.drawImage(scrollImg,canvasWidth-scrollVal,0,imgWidth, imgHeight);
       }
 
-      let birdyImg = new Image();
-      birdyImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468459980/birdyfinal_qa3jol.png"
+      let slowBirdImg = new Image();
+      slowBirdImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468459980/birdyfinal_qa3jol.png"
 
 
       let kittyImg = new Image();
       kittyImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468473589/fatcatfinal_ri9nay.png";
 
 
-      let birdy2Img = new Image();
-      birdy2Img.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468474814/143902_flappy-flying-bird-sprite-shee_fukbcl.png";
+      let fastBirdImg = new Image();
+      fastBirdImg.src = "http://res.cloudinary.com/josephgupkim/image/upload/v1468474814/143902_flappy-flying-bird-sprite-shee_fukbcl.png";
 
 
       let kittyRadius = 25
       let kittyStartX = 100;
       let kittyStartY = canvas.height - (kittyRadius * 3);
 
-      let frameNum = 0;
-      let b2Num = 0;
-      let fNum = 0;
-      function birdyRender(bird, bird2){
+      const slowBird = {
+        fbr: 30,
+        fbsx: canvas.width - 90,
+        fbsy: 100,
+        fbvx: 0,
+        fbvy: 0,
+        color: "green"
+      }
 
-        if (frameNum < 3){
-          frameNum += 1;
+
+      const fastBird = {
+        fbr: 15,
+        fbsx: canvas.width - 90,
+        fbsy: 200,
+        fbvx: 0,
+        fbvy: 0,
+        color: "blue"
+      }
+
+      let slowBirdFrameNum = 0;
+      let fastBirdFrameNum = 0;
+      let kittyFrameNum = 0;
+      function birdyRender(){
+
+        if (slowBirdFrameNum < 2){
+          slowBirdFrameNum += 1;
         } else {
-          frameNum = 0;
+          slowBirdFrameNum = 0;
         }
 
-        if (b2Num < 8){
-          b2Num += 1;
+        if (fastBirdFrameNum < 7){
+          fastBirdFrameNum += 1;
         } else {
-          b2Num = 0;
+          fastBirdFrameNum = 0;
         }
 
-        if (fNum < 4){
-          fNum += 1;
+        if (kittyFrameNum < 3){
+          kittyFrameNum += 1;
         } else {
-          fNum = 0;
+          kittyFrameNum = 0;
         }
 
 
-        ctx.drawImage(birdyImg,
-          0 + (frameNum * 92),
+        ctx.drawImage(slowBirdImg,
+          0 + (slowBirdFrameNum * 92),
           0,
           92,
           64,
-          (bird.fbsx - 30),
-          (bird.fbsy - 30),
-          60,
-          60
+          (slowBird.fbsx - slowBird.fbr),
+          (slowBird.fbsy - slowBird.fbr),
+          slowBird.fbr * 2,
+          slowBird.fbr * 2
         )
 
-        ctx.drawImage(birdy2Img,
-          0 + (b2Num * 65),
+        ctx.drawImage(fastBirdImg,
+          0 + (fastBirdFrameNum * 65),
           0,
           60,
           46,
-          (bird2.fbsx - 15),
-          (bird2.fbsy - 25),
+          (fastBird.fbsx - 15),
+          (fastBird.fbsy - 25),
           45,
           55
         )
 
         ctx.drawImage(kittyImg,
-          0 + (fNum * 50),
+          0 + (kittyFrameNum * 50),
           0,
           50,
           50,
@@ -128,24 +147,6 @@
 
       let highscoreCounter = 0;
 
-
-      const fastBird = {
-        fbr: 15,
-        fbsx: canvas.width - 90,
-        fbsy: 200,
-        fbvx: -4,
-        fbvy: 0,
-        color: "blue"
-      }
-
-      const slowBird = {
-        fbr: 30,
-        fbsx: canvas.width - 90,
-        fbsy: 100,
-        fbvx: -3,
-        fbvy: 0,
-        color: "green"
-      }
 
       function drawBird(bird){
         ctx.beginPath();
@@ -234,14 +235,25 @@
         bird.fbsy += bird.fbvy;
       }
 
-      function birdReset(){
+      function gameReset(){
         fastBird.fbsx = canvasWidth - 90;
         fastBird.fbsy = 200;
         fastBird.fbvx = 0;
         slowBird.fbsx = canvasWidth - 90;
         slowBird.fbsy = 100;
         slowBird.fbvx = 0;
+        kittyStartX = 100;
+        kittyStartY = canvas.height - (kittyRadius * 3);
+        starting = true;
         speed = 0;
+        // birdyRender(slowBird, fastBird);
+      }
+
+      function gameStart(){
+        speed = 2;
+        fastBird.fbvx = -4;
+        slowBird.fbvx = -3;
+        highscoreCounter = 0;
       }
 
       function checkIfGameOver(bird1, bird2){
@@ -254,21 +266,24 @@
 
       function gameOver(){
         alert(`Game Over! Your score was ${highscoreCounter}!`);
-        birdReset();
+        gameReset();
       }
 
       function mechanic(){
         render();
         // reDraw();
+        birdyRender();
+
         moveImage(fastBird);
         moveImage(slowBird);
 
-        birdyRender(slowBird, fastBird);
-
-        checkIfGameOver(fastBird, slowBird);
-        levelUp();
         checkBounds(fastBird);
         checkBounds(slowBird);
+
+        levelUp();
+
+        checkIfGameOver(fastBird, slowBird);
+
       }
 
 
@@ -278,7 +293,10 @@
       function keyDownHandler(e){
         if (e.keyCode === 32){
           upPressed = true;
-          starting = false;
+          if (starting){
+            starting = false;
+            gameStart();
+          }
         }
       }
 
@@ -289,7 +307,7 @@
       }
 
       // setInterval(mechanic, 10);
-      setTimeout(function(){ setInterval(mechanic, 10)}, 3000);
+      setTimeout(function(){ setInterval(mechanic, 200)}, 2000);
 
     </script>
 
