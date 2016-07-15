@@ -170,42 +170,6 @@
         )
       }
 
-      function explosionRender(){
-
-        for (let i = 0; i < 15; i++){
-
-          var exploLA = [
-            [0, 0],
-            [128, 0],
-            [256, 0],
-            [384, 0],
-            [0, 128],
-            [128, 128],
-            [256, 128],
-            [384, 128],
-            [0, 256],
-            [128, 256],
-            [256, 256],
-            [384, 256],
-            [0, 384],
-            [128, 384],
-          ]
-
-          ctx.drawImage(
-            explosionImg,
-            exploLA[i][0],
-            exploLA[i][1],
-            128,
-            128,
-            kittyStartX - kittyRadius - 10,
-            kittyStartY - kittyRadius,
-            90,
-            90
-          )
-        }
-      }
-
-
       function drawBird(bird){
         ctx.beginPath();
         ctx.arc(bird.fbsx, bird.fbsy, bird.fbr, 0, Math.PI * 2, false);
@@ -345,7 +309,9 @@
         highscoreCounter = 0;
         speed = 0;
         phase = 1;
+
         explosionFrameNum = 0;
+
         // birdyRender(slowBird, fastBird);
       }
 
@@ -367,7 +333,7 @@
       function gameOver(){
         render();
         birdyRender();
-        explosionRender();
+
         alert(`Game Over! Your score was ${highscoreCounter}!`);
         if (highScore < highscoreCounter){
           highScore = highscoreCounter;
@@ -421,7 +387,7 @@
         }
       }
 
-      setInterval(mechanic, 50);
+      setInterval(mechanic, 50)
 
     </script>
 
