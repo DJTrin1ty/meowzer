@@ -10,30 +10,41 @@ Listens for user input on keydown/keyup to move animated image accordingly.
 Birds generated to spawn at random locations to ensure predictable gaming
 is avoided.
 
-Game keeps track of current high-score, most recent game's high score, and
-which phase (level of speed birds have) player is on.
+Game keeps track of current high-score, most recent game's high score,
+and phases (speed birds have).
 
 
-## **Built With**
+
+## **Getting Started**
+
+### **Prerequisites**
+
+No installation needed.
+
+## **Deployment**
 
 
-⋅⋅* Atom
+### **Built With**
 
 
-⋅⋅* JavaScript
+* Atom
+
+* JavaScript
+
+* HTML5 - Canvas
 
 
-⋅⋅* HTML5 - Canvas
 
-
-<br>
-
----
-
-## **Motivation**
+### **Motivation**
 
 
 a/A Project - JavaScript Purist
 
 
 Simple 8 bit pixelated love
+
+
+
+### **License**
+
+This project is license under the MIT License?
