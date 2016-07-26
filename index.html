@@ -22,6 +22,20 @@
 </script>
   </head>
   <body>
+    <section class="title-container">
+      <section id="intro-container">
+        <section class="test">
+          <h2 class="intro title">Meowzer</h2>
+          <p class="pressbar title">Press "space bar" start playing!</p>
+        </section>
+      </section>
+      <section id="gameover-container">
+        <section class="test">
+          <h2 class="gameover title">Game Over</h2>
+          <p class="pressbar title">Press "space bar" to play again!</p>
+        </section>
+      </section>
+    </section>
 
     <canvas id="myCanvas" width="1000" height="500"></canvas>
 
@@ -76,7 +90,7 @@
 
       let kittyRadius = 25
       let kittyStartX = 100;
-      let kittyStartY = canvas.height - (kittyRadius * 3);
+      let kittyStartY = canvas.height - (kittyRadius * 18);
 
       const slowBird = {
         fbr: 30,
@@ -191,6 +205,8 @@
 
       let upPressed = false;
       let starting = true;
+      let intro = true;
+      let over = false;
 
       function reDraw(){
         drawBird(fastBird);
@@ -306,8 +322,9 @@
         slowBird.fbsy = 100;
         slowBird.fbvx = 0;
         kittyStartX = 100;
-        kittyStartY = canvas.height - (kittyRadius * 3);
+        kittyStartY = canvas.height - (kittyRadius * 18);
         starting = true;
+        onOverDisplay();
         highscoreCounter = 0;
         speed = 0;
         phase = 1;
@@ -327,6 +344,17 @@
         }
       }
 
+      function offOverDisplay(){
+        document.getElementById("gameover-container").style.display = "none"
+      }
+
+      function onOverDisplay(){
+        document.getElementById("gameover-container").style.display = "block"
+      }
+
+      function offIntroDisplay(){
+        document.getElementById("intro-container").style.display = "none"
+      }
 
       function gameOver(){
         render();
@@ -373,6 +401,8 @@
           upPressed = true;
           if (starting){
             starting = false;
+            offIntroDisplay();
+            offOverDisplay();
             gameStart();
           }
         }
@@ -390,11 +420,10 @@
 
     <section className="directions">
       <h3 class="meowzer"><p>M</p><p>e</p><p><img src="http://res.cloudinary.com/josephgupkim/image/upload/v1469502672/donut2_yo2h60.gif"/></p><p>w</p><p>z</p><p>e</p><p>r</p></h3>
-      <p class="rainbow"> Press and hold down the "space bar" to make Meowzer fly upwards.
-        Releasing the "space bar" will bring him back down towards the ground
-        but be careful not to let him fall off the screen!
-        Dodge the mean birds and attempt to gain the highest score; but
-        be warned, it gets harder over time!
+      <p class="rainbow"> "Press and hold down the <strong><em>space bar</em></strong> to make Meowzer fly upwards.
+        Release the <strong><em>space bar</em></strong> and Meowzer will fall back down.
+        If Meowzer falls down off the screen or gets hit by the mean birds, it's game over!
+        Attempt to gain the highest score but be warned, it gets difficult over time!"
       </p>
     </section>
   </body>
