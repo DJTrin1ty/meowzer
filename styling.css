@@ -1,0 +1,56 @@
+#myCanvas {
+  margin-top: 60px;
+  border: 10px solid transparent;
+  background: repeating-linear-gradient(-45deg, #ff88da, #ee5fff 5px, white 5px, white 10px);
+}
+
+.directions {
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.meowzer {
+  display: flex;
+  justify-content: center;
+  height: 110px;
+  margin-top: 30px;
+  padding-top: 35px;
+  margin-bottom: -15px;
+}
+
+.rainbow {
+  background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #ff22cf), color-stop(0.6, #29f),color-stop(0.75, #ff22da), color-stop(0.9, #f22), color-stop(1, #22ffc2) );
+  background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+  color:transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+p.rainbow {
+  padding: 30px 100px;
+  border-bottom: 2px solid #50ff44;
+  border-top: 2px solid #50ff44;
+  font-size: 25px;
+  margin-top: 0px;
+}
+
+
+h3 p {
+    font-size: 60px;
+    padding: 0px 15px;
+    transition: all 2s linear;
+    font-family: PS2P;
+    margin: 0px;
+    margin-top: 10px;
+    color: rgb(255, 123, 255);
+}
+
+h3 p:hover {
+    margin-top: -35px;
+    transition: all .15s linear;
+}
+
+
+img {
+    height: 65px;
+}
