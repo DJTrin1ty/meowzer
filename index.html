@@ -26,13 +26,13 @@
       <section id="intro-container">
         <section class="test">
           <h2 class="intro title">Meowzer</h2>
-          <p class="pressbar title">Press "space bar" start playing!</p>
+          <p class="pressbar title">Press "w" start playing!</p>
         </section>
       </section>
       <section id="gameover-container">
         <section class="test">
           <h2 class="gameover title">Game Over</h2>
-          <p class="pressbar title">Press "space bar" to play again!</p>
+          <p class="pressbar title">Press "w" to play again!</p>
         </section>
       </section>
     </section>
@@ -397,7 +397,7 @@
       document.addEventListener("keyup", keyUpHandler, false);
 
       function keyDownHandler(e){
-        if (e.keyCode === 32){
+        if (e.keyCode === 87){
           upPressed = true;
           if (starting){
             starting = false;
@@ -409,7 +409,7 @@
       }
 
       function keyUpHandler(e){
-        if (e.keyCode === 32){
+        if (e.keyCode === 87){
           upPressed = false;
         }
       }
